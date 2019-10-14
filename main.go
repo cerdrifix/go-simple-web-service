@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -14,12 +14,12 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte(message))
 		if err != nil {
-			fmt.Printf("Error writing the response: %v", err)
+			log.Fatalf("Error writing the response: %v", err)
 		}
 	})
 
 	err := http.ListenAndServe(":8088", mux)
 	if err != nil {
-		fmt.Printf("Error during server startup: %v", err)
+		log.Fatalf("Error during server startup: %v", err)
 	}
 }
