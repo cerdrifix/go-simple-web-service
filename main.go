@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"simpleWebService/pages"
 	"simpleWebService/server"
 )
@@ -14,8 +15,13 @@ var (
 )
 
 func main() {
+
+	logger := log.New(os.Stdout, "cfx | ", log.Lshortfile|log.LstdFlags)
+
+	p := pages.New(logger)
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", pages.HomeHandler)
+	mux.HandleFunc("/", p.Home)
 
 	srv := server.New(mux, ServerAddress)
 
