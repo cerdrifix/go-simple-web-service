@@ -1,9 +1,9 @@
 package main
 
 import (
-	"crypto/tls"
 	"log"
 	"net/http"
+	"simpleWebService/server"
 	"time"
 )
 
@@ -20,45 +20,16 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		_, err := w.Write([]byte(message))
+		_, err := w.Write([]byte(message + " " + time.Now().Format("2006-01-02 15:04:05.999999999")))
 		if err != nil {
 			log.Fatalf("Error writing the response: %v", err)
 		}
 	})
 
-	srv := NewServer(mux, ServerAddress)
+	srv := server.New(mux, ServerAddress)
 
 	err := srv.ListenAndServeTLS(CertificateFile, CertificateKeyFile)
 	if err != nil {
 		log.Fatalf("Error during server startup: %v", err)
 	}
-}
-
-func NewServer(mux *http.ServeMux, serverAddress string) *http.Server {
-	tlsConfig := &tls.Config{
-		PreferServerCipherSuites: true,
-		CurvePreferences: []tls.CurveID{
-			tls.CurveP256,
-			tls.X25519,
-		},
-
-		MinVersion: tls.VersionTLS12,
-		CipherSuites: []uint16{
-			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-		},
-	}
-	srv := &http.Server{
-		Addr:         serverAddress,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
-		TLSConfig:    tlsConfig,
-		Handler:      mux,
-	}
-	return srv
 }
