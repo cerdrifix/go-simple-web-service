@@ -18,10 +18,8 @@ func main() {
 
 	logger := log.New(os.Stdout, "cfx | ", log.Lshortfile|log.LstdFlags)
 
-	p := pages.New(logger)
-
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", p.Home)
+	setupRoutes(mux, pages.New(logger))
 
 	srv := server.New(mux, ServerAddress)
 
@@ -29,4 +27,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error during server startup: %v", err)
 	}
+}
+
+func setupRoutes(mux *http.ServeMux, h *pages.Handler) {
+	mux.HandleFunc("/", h.Logger(h.Home))
 }
