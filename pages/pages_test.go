@@ -27,7 +27,7 @@ func Test(t *testing.T) {
 	for _, test := range tests {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
-			h := New(nil)
+			h := New(nil, nil)
 			h.Home(test.out, test.in)
 			if test.out.Code != test.expectedStatus {
 				t.Logf("Error! Status expected: %d but got: %d\n", test.out.Code, test.expectedStatus)
