@@ -21,7 +21,6 @@ func New(logger *log.Logger) *Handler {
 func (h *Handler) Home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	time.Sleep(20)
 	_, err := w.Write([]byte(message + " " + time.Now().Format("2006-01-02 15:04:05.999999999")))
 	if err != nil {
 		h.logger.Fatalf("Error writing the response: %v", err)
